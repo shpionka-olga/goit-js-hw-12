@@ -32,7 +32,7 @@ const showError = (error) => {
     iziToast.error(iziToastOptions);
 }
 
-searchForm.addEventListener("submit", (event) => {
+searchForm.addEventListener("submit", async (event) => {
     // init/reset actions
     page_number = PAGE_INIT;
     event.preventDefault();
@@ -48,26 +48,28 @@ searchForm.addEventListener("submit", (event) => {
     } else {
         prevSearchRequest = searchRequest;
         toggleVisibility(".loader", true);
-        fetchImages(searchRequest, PER_PAGE)
-            .then(response => renderImages(response))
-            .then(data => checkPagination(data, page_number))
-            .catch(error => {
-                showError(error);
-            });
+        try {
+            const { data } = await fetchImages(searchRequest, PER_PAGE);
+            renderImages(data);
+            checkPagination(data, page_number)
+        } catch (error) {
+            showError(error);
+        }
     }
 });
 
-loadMoreBtn.addEventListener("click", (event) => {
+loadMoreBtn.addEventListener("click", async (event) => {
     page_number++;
     toggleVisibility(".loader", true);
     toggleVisibility(".load-more-btn", false);
-    fetchImages(prevSearchRequest, PER_PAGE, page_number)
-        .then(response => renderImages(response))
-        .then(data => checkPagination(data, page_number))
-        .then(() => scrollDownGallery())
-        .catch(error => {
-            showError(error);
-        });
+    try {
+        const { data } = await fetchImages(prevSearchRequest, PER_PAGE, page_number);
+        renderImages(data);
+        checkPagination(data, page_number);
+        scrollDownGallery();
+    } catch (error) {
+        showError(error);
+    }
 });
 
 

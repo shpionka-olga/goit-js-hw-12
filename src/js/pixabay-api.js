@@ -4,7 +4,7 @@ export const PER_PAGE = 15;
 export const PAGE_INIT = 1;
 
 
-export const fetchImages = async (searchRequest, per_page, page = PAGE_INIT) => {
+export const fetchImages = (searchRequest, per_page, page = PAGE_INIT) => {
 
     const searchParams = new URLSearchParams({
         key: API_KEY,
@@ -16,8 +16,8 @@ export const fetchImages = async (searchRequest, per_page, page = PAGE_INIT) => 
         per_page,
         page
     });
-    const response = await axios.get(`https://pixabay.com/api/?${searchParams}`);
-    return response.data;
+    return axios.get(`https://pixabay.com/api/?${searchParams}`);
+
 };
 
 
